@@ -162,7 +162,7 @@ const updateQuantity = `
     SET "Quantity" = $1
     WHERE "InventoryNumber" = $2
 `;
-
+//export to controller.js
 module.exports = {
     getBooks,
     getBookByID, 

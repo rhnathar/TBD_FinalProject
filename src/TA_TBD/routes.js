@@ -27,5 +27,5 @@ router.delete('/book-reviews/:CustomerNumber/:BookNumber', controller.removeBook
 //put
 router.put('/books/:BookNumber', controller.updateBook);
 router.put('/inventory/:InventoryNumber', controller.updateQuantity);
-
+//export to server.js
 module.exports = router;

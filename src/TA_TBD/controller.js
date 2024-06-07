@@ -65,13 +65,13 @@ const addBook = (req, res) => {
 
 const removeBook = (req, res) => {
     const BookNumber = parseInt(req.params.BookNumber);
-
+    //check if book exists
     pool.query(queries.getBookByID, [BookNumber], (error, results) => {
         const noBookFound = !results.rows.length;
         if(noBookFound){
             res.send("Book does not exist in the database");
         } 
-        else{
+        else{//remove book
             pool.query(queries.removeBook, [BookNumber], (error, results) => {
                 if (error) throw error;
                 res.status(200).send("Book removed successfully");
@@ -83,13 +83,13 @@ const removeBook = (req, res) => {
 const updateBook = (req, res) => {
     const BookNumber = parseInt(req.params.BookNumber);
     const { BookName } = req.body;
-
+    //check if book exists
     pool.query(queries.getBookByID, [BookNumber], (error, results) => {
         const noBookFound = !results.rows.length;
         if(noBookFound){
             res.send("Book does not exist in the database");
         }
-        else{
+        else{//update book
             pool.query(queries.updateBook, [BookName, BookNumber], (error, results) => {
                 if (error) throw error;
                 res.status(200).send("Book updated successfully");
@@ -206,13 +206,13 @@ const addBookReview = (req, res) => {
 const removeBookReview = (req, res) => {
     const CustomerNumber = parseInt(req.params.CustomerNumber);
     const BookNumber = parseInt(req.params.BookNumber);
-
+    //check if review exists
     pool.query(queries.checkReviewExist, [CustomerNumber, BookNumber], (error, results) => {
         if (results.rows.length === 0) {
             res.send('Review does not exist');
             return;
         }
-
+        //remove review
         pool.query(queries.removeBookReview, [CustomerNumber, BookNumber], (error, results) => {
             if (error) throw error;
             res.status(201).send('Review removed successfully');
@@ -226,7 +226,7 @@ const selectBookBuilder = (req, res) => {
     let query = 'SELECT ' + (Attribute || 'b.*, g.*') + ' FROM public."BOOK" b JOIN public."BOOK_GENRE" bg ON b."BookNumber" = bg."BOOK_BookNumber" JOIN public."GENRE" g ON bg."GENRE_GenreNumber" = g."GenreNumber"';
     let whereClauses = [];
     let params = [];
-
+    //where condition = value attribute
     if (Condition && Value) {
         whereClauses.push(`${Condition} = $1`);
         params.push(Value);
@@ -235,15 +235,15 @@ const selectBookBuilder = (req, res) => {
     if (whereClauses.length > 0) {
         query += ' WHERE ' + whereClauses.join(' AND ');
     } 
-
+    //group by attribute
     if (GroupBy) {
         query += ` GROUP BY ${GroupBy}`;
     }
-
+    //order by attribute
     if (OrderBy) {
         query += ` ORDER BY ${OrderBy}`;
     }
-
+    //limit attribute
     if (Limit) {
         query += ` LIMIT ${Limit}`;
     }
@@ -305,13 +305,13 @@ const getInventory = (req, res) => {
 const updateQuantity = (req, res) => {
     const InventoryNumber = parseInt(req.params.InventoryNumber);
     const { Quantity } = req.body;
-
+    //check if inventory exists
     pool.query(queries.getInventory, [InventoryNumber], (error, results) => {
         if (results.rows.length === 0) {
             res.send('Inventory not found');
             return;
         }
-
+        //update quantity
         pool.query(queries.updateQuantity, [Quantity, InventoryNumber], (error, results) => {
             if (error) throw error;
             res.status(200).send('Inventory updated successfully');
