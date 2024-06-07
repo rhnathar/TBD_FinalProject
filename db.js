@@ -2,6 +2,7 @@ const Pool = require("pg").Pool;
 require("dotenv").config();
 
 const pool = new Pool({
+    //add database connection information
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
